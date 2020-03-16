@@ -5,7 +5,6 @@ from defines import *
 
 ACTIONSTATUS_READY=0
 ACTIONSTATUS_RUNNING=1
-ACTIONSTATUS_ENDED=2
 
 class CBTAction(CBTNode):
 
@@ -20,16 +19,21 @@ class CBTAction(CBTNode):
         self.m_ActionStatus=iStatus
 
     def Enter(self):
-        pass
+        print "Enter"
 
     def Exit(self):
-        pass
+        print "Exit"
 
     def Execute(self):
-        return self.m_Result.Result()
+        return RESULTSTATE_RUNNING
+
+    def Clear(self):
+        if self.m_ActionStatus!=ACTIONSTATUS_READY:
+            self.SetActionStatus(ACTIONSTATUS_READY)
+            self.Exit()
 
     def Tick(self):
-        self.m_Result.Reset()
+        iRlt=RESULTSTATE_ENDED
         if self.ActionStatus()==ACTIONSTATUS_READY:
             self.SetActionStatus(ACTIONSTATUS_RUNNING)
             self.Enter()
@@ -38,16 +42,11 @@ class CBTAction(CBTNode):
             if iRlt!=RESULTSTATE_RUNNING:
                 self.SetActionStatus(ACTIONSTATUS_READY)
                 self.Exit()
-        return self.m_Result
-
-    def Clear(self):
-        if self.m_ActionStatus!=ACTIONSTATUS_READY:
-            self.SetActionStatus(ACTIONSTATUS_READY)
-            self.Exit()
+        return iRlt
 
     #action不可以添加子节点
     def AddChild(self,node):
-        pass
+        print "CBTAction : cannot addchild"
 
     def RemoveChild(self,node):
-        pass
+        print "CBTAction : cannot removechild"
